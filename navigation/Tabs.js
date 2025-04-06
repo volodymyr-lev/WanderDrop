@@ -65,6 +65,7 @@ export default function Tabs() {
                     </View>
                 )
             },
+            
             tabBarLabelStyle: {
                 fontSize: 12,
                 marginTop: 4,
