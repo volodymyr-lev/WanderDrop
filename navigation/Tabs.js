@@ -61,7 +61,7 @@ export default function Tabs() {
                         alignItems:'center',
                         justifyContent:'center',
                     }} backgroundColor={focused ? '#24C690' : null}>
-                        <IconComponent name={iconName} size={24} color='#fff'></IconComponent>
+                        <IconComponent name={iconName} size={24} color={'#fff'}></IconComponent>
                     </View>
                 )
             },
