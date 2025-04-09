@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 
 export default function Tabs() {
   return (
-    <NavigationContainer>
+    <NavigationContainer zIndex>
            <Tab.Navigator
             screenOptions={({ route }) => ({
             headerShown: false,
