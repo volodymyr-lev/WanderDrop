@@ -1,10 +1,12 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native';
+import WIP from '../WIP/WIP';
 
 export default function ContributeScreen() {
     return (
         <View style={styles.container}>
             <Text>Contribute Tab</Text>
+            <WIP/>
         </View>
     )
 }

@@ -7,7 +7,7 @@ export default function BottomSheetMarkerInfo({ marker }) {
 
     return (
         <View style={styles.container}>
-            <MarkerTabs marker={marker} />
+                <MarkerTabs marker={marker}/>
         </View>
     );
 }

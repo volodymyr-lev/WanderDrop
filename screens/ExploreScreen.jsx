@@ -1,11 +1,13 @@
 import 'react-native-reanimated';
-import React, { useState, useEffect,useRef, useMemo } from 'react';
-import { View, StyleSheet, Dimensions, ActivityIndicator, Text, Button } from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { View, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { getMarkers } from '../firebase/firebase';
-import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import BottomSheetMarkerInfo from '../components/BottomSheetMarkerInfo';
+import OpenMapButton from '../components/OpenMapButton';
+import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 
 export default function ExploreScreen() {
     const [location, setLocation] = useState(null);
@@ -13,41 +15,52 @@ export default function ExploreScreen() {
     const [markers, setMarkers] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
 
+    const showFab = useSharedValue(false);
     const bottomSheetRef = useRef(null);
-    const snapPoints = useMemo(() => ['50%', '80%'], []);
+    const snapPoints = useMemo(() => ['50%', '85%'], []);
     
     const handleMarkerPress = (marker) => {
         setSelectedMarker(marker);
-        
         setTimeout(() => {
-            console.log(bottomSheetRef.current);
-            bottomSheetRef.current?.snapToIndex(0);
+            bottomSheetRef.current?.snapToIndex(1);
         }, 100);
-        console.log("Marker pressed!", marker);
+    };
+
+    const handleSheetChanges = (index) => {
+        showFab.value = index >= 0;
     };
 
     useEffect(() => {
         (async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync(); 
-        if (status !== 'granted') {
-            console.log('Permission to access location was denied');
+            let { status } = await Location.requestForegroundPermissionsAsync(); 
+            if (status !== 'granted') {
+                setLoading(false);
+                return;
+            }
+            const fetchedMarkers = await getMarkers();
+            setMarkers(fetchedMarkers);
+            let loc = await Location.getCurrentPositionAsync({});
+            setLocation(loc.coords);
             setLoading(false);
-            return;
-        }
-        const fetchedMarkers = await getMarkers();
-        setMarkers(fetchedMarkers);
-        
-        let loc = await Location.getCurrentPositionAsync({});
-        setLocation(loc.coords);
-        setLoading(false);
         })();
     }, []);
 
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: withTiming(showFab.value ? 1 : 0, { duration: 300 }),
+            transform: [
+                {
+                    translateY: withTiming(showFab.value ? 0 : 30, { duration: 300 }),
+                },
+            ],
+        };
+    });
+
     if (loading || !location) {
         return (
-        <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="#4CAF50" />
-        </View>
+            <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#4CAF50" />
+            </View>
         );
     }
 
@@ -57,22 +70,19 @@ export default function ExploreScreen() {
                 <MapView
                     style={styles.map}
                     initialRegion={{
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                    latitudeDelta: 0.01,
-                    longitudeDelta: 0.01,
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
                     }}
                     showsUserLocation={true}>
-                    
-                    {markers.map((marker)=>(
-                    <Marker
-                        key={marker.id}
-                        coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
-                        
-                        onPress={()=>handleMarkerPress(marker)}
-
-                        image={marker.isNice ? require('../assets/marker-nice.png') : require('../assets/marker.png')}
-                    />
+                    {markers.map((marker) => (
+                        <Marker
+                            key={marker.id}
+                            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                            onPress={() => handleMarkerPress(marker)}
+                            image={marker.isNice ? require('../assets/marker-nice.png') : require('../assets/marker.png')}
+                        />
                     ))}
                 </MapView>
             </View>
@@ -84,12 +94,26 @@ export default function ExploreScreen() {
                 enablePanDownToClose={true}
                 backgroundStyle={{ backgroundColor: '#161414' }}
                 handleIndicatorStyle={{ backgroundColor: '#FFFFFF' }}
+                onChange={handleSheetChanges}
             >
                 <BottomSheetView style={styles.bottomSheetView}>
-                    <BottomSheetMarkerInfo marker={selectedMarker}/>
+                    <BottomSheetMarkerInfo marker={selectedMarker} />
                 </BottomSheetView>
             </BottomSheet>
 
+            {selectedMarker && (
+                <Animated.View style={[{
+                    position: 'absolute',
+                    right: 10,
+                    bottom: 90,
+                    zIndex: 1000,
+                }, animatedStyle]}>
+                    <OpenMapButton 
+                        latitude={selectedMarker?.latitude} 
+                        longitude={selectedMarker?.longitude} 
+                    />
+                </Animated.View>
+            )}
         </View>
     );
 }
@@ -113,5 +137,3 @@ const styles = StyleSheet.create({
         height: '100%',
     },
 });
-
-
