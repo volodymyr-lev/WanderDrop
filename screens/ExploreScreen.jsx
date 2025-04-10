@@ -21,6 +21,7 @@ export default function ExploreScreen() {
     
     const handleMarkerPress = (marker) => {
         setSelectedMarker(marker);
+        console.log(marker);
         setTimeout(() => {
             bottomSheetRef.current?.snapToIndex(1);
         }, 100);

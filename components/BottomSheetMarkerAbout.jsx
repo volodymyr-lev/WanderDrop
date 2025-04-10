@@ -201,6 +201,7 @@ const photosStyles = StyleSheet.create({
         color: '#fff',
         fontSize: 14,
         marginBottom: 10,
+        
     },
     image: {
         width: 100,
