@@ -4,7 +4,8 @@ import { getReviewsById } from '../firebase/firebase';
 import Review from './Review';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export default function BottomSheetMarkerReviews({ marker }) {
+
+export default function BottomSheetMarkerReviews({ marker , backgroundColor}) {
     const [reviews, setReviews] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
 
@@ -37,7 +38,9 @@ export default function BottomSheetMarkerReviews({ marker }) {
     return (
         <ScrollView style={styles.container}>
             {reviews.map((review, index) => (
-                <Review key={index} data={review} />
+                <Review key={index} data={review}
+                    pad={20}
+                    backColor={'#393939'}/>
             ))}
         </ScrollView>
     );

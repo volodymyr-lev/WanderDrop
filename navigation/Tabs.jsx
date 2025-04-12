@@ -8,6 +8,7 @@ import ContributeScreen from '../screens/ContributeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { View } from 'react-native';
+import GoStack from './GoStack';
 
 
 const Tab = createBottomTabNavigator();
@@ -76,7 +77,7 @@ export default function Tabs() {
         })}
       >
         <Tab.Screen name="Explore" component={ExploreScreen} />
-        <Tab.Screen name="Go" component={GoScreen} />
+        <Tab.Screen name="Go" component={GoStack} />
         <Tab.Screen name="Saved" component={SavedScreen} />
         <Tab.Screen name="Contribute" component={ContributeScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />

@@ -4,7 +4,7 @@ import { getUser } from '../firebase/firebase';
 
 import StarRating from 'react-native-star-rating-widget';
 
-export default function Review({data}) {
+export default function Review({data , pad, backColor}) {
 
     const [user, setUser] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
@@ -40,7 +40,9 @@ export default function Review({data}) {
     const exactDate = data.date.toDate().toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
     
     return (
-        <View style={styles.container}>
+        <View style={styles.container} 
+            padding={pad} 
+            backgroundColor={backColor}>
             
             {/* header */}
             <View style={styles.header}>
@@ -85,8 +87,6 @@ export default function Review({data}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#393939',
-        padding: 20,
         marginBottom: 10,
         borderRadius: 16,
     },
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     },
     header_text:{
         color: '#24C690',
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         marginLeft: 10,
     },
