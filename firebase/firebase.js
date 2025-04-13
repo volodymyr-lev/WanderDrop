@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore'
-
+import { getAuth } from "firebase/auth";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore'
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC4qFVXwrR9mRs8XoRFE0yFf84bDDIqv7Q",
@@ -13,7 +14,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
+export const auth = getAuth(app); 
 
 export const getMarkers = async () => {
     try {
@@ -68,3 +70,23 @@ export const getUser = async (id) => {
         return [];
     }
 }
+
+
+export const handleRegister = async (email, password, name) => {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, 'users', user.uid), {
+            name,
+            email,
+            pfp_url: 'https://cdn.drawception.com/drawings/772685/WHMjXsf5s8.png',
+            createdAt: new Date(),
+        });
+
+        console.log('User registered and saved');
+    } catch (error) {
+        console.error('Registration error:', error);
+        alert(error.message);
+    }
+};

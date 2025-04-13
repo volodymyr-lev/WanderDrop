@@ -9,6 +9,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { View } from 'react-native';
 import GoStack from './GoStack';
+import ProfileStack from './ProfileStack';
 
 
 const Tab = createBottomTabNavigator();
@@ -80,7 +81,7 @@ export default function Tabs() {
         <Tab.Screen name="Go" component={GoStack} />
         <Tab.Screen name="Saved" component={SavedScreen} />
         <Tab.Screen name="Contribute" component={ContributeScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="Profile" component={ProfileStack} />
       </Tab.Navigator>
     </NavigationContainer>
   );
