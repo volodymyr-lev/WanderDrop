@@ -75,11 +75,24 @@ export const handleRegister = async (email, password, name) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        const description = "";
+        const contributes = [];
+        const saved = [];
+        const points = 0;
+        const visits = [];
+        const uid = user.uid;
+
         await setDoc(doc(db, 'users', user.uid), {
             name,
             email,
             pfp_url: 'https://cdn.drawception.com/drawings/772685/WHMjXsf5s8.png',
             createdAt: new Date(),
+            description,
+            contributes,
+            points,
+            saved,
+            visits,
+            uid,
         });
 
         console.log('User registered and saved');

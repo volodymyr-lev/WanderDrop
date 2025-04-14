@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { getContributesByUser } from '../firebase/firebase';
 import Contribute from './Contribute';
 import { ScrollView } from 'react-native-gesture-handler';
+import { EventRegister } from 'react-native-event-listeners';
 
 export default function Contributes({userData}) {
     const [contributes, setContributes] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     
     useEffect(() => {
+        console.log("GOT USER INFO : " + userData?.contributes);
         
         const fetchContributes = async () =>{
             const contributesData = await getContributesByUser(userData);
@@ -19,9 +21,8 @@ export default function Contributes({userData}) {
         if(userData?.uid){
             fetchContributes();
         }
-        
 
-    }, []);
+    }, [userData]);
 
     if(loading){
         return (
@@ -34,7 +35,7 @@ export default function Contributes({userData}) {
     return (
         <ScrollView style={styles.container}>
             {contributes.map((contribute, index) => (
-                <Contribute key={index} contribute={contribute}/>
+                <Contribute key={index} contribute={contribute} />
             ))}
         </ScrollView>
     );

@@ -24,6 +24,9 @@ export default function ContributeScreen({navigation}) {
                 const fetchedUser = await getUser(user.uid);
                 setUserInfo(fetchedUser);
                 setLoading(false);
+
+                
+                console.log("Fethced user data : " + fetchedUser.contributes);
             } catch (error) {
                 console.error('Error in ContributeScreen:', error);
                 setLoading(false);
@@ -31,16 +34,16 @@ export default function ContributeScreen({navigation}) {
         };
         
         fetchUserData();
-
+        
         const eventListener = EventRegister.addEventListener('MARKERS_UPDATED', async ()=>{
-            console.log("Reloading contribute screen");
+            console.log("Fetching user from event");
+
             fetchUserData();
         })
 
         return () => {
             EventRegister.removeEventListener(eventListener);
         };
-        
     }, [user]);
     
     if (loading) {
@@ -58,7 +61,14 @@ export default function ContributeScreen({navigation}) {
                     <Text style={styles.contributionText}>
                         My contributions
                     </Text> 
-                    <Contributes userData={userInfo}/>
+                    {userInfo.contributes.length === 0 && (
+                        <View style={styles.noContributesContainer}>
+                            <Text style={styles.noContributesText}>
+                                No contributes yet
+                            </Text>
+                        </View>
+                    )}
+                    <Contributes userData={userInfo} navigation={navigation}/>
                 </View>
             ) : (
                 <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
@@ -108,6 +118,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 20
     },
+    noContributesContainer:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    noContributesText:{
+        color: '#89807A',
+        fontSize: 20,
+    }
 });
 
 

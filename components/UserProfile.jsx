@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import ProfileTabs from '../navigation/ProfileTabs';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 
 export default function UserProfile({navigation}) {
@@ -46,6 +47,8 @@ export default function UserProfile({navigation}) {
             {/* header */}
             <View style={[styles.header, {justifyContent: 'center', alignItems: 'center', marginBottom: 10}]}>
                 <Text style={styles.headerText}>{userData.name}</Text>
+
+                <FontAwesome5/>
             </View>
 
             {/* userInfo */}

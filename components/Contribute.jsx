@@ -1,12 +1,16 @@
 
 import React, {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Touchable, TouchableOpacity } from 'react-native';
 import StarRating from 'react-native-star-rating-widget';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function Contribute({contribute}) {
     const [location, setLocation] = useState(null); 
     const [distance, setDistance] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const navigation = useNavigation();
 
     useEffect(() => {
         (async () => {
@@ -39,6 +43,7 @@ export default function Contribute({contribute}) {
         }
     };
 
+
     const toRadians = (degree) => {
         return (degree * Math.PI) / 180;
     };
@@ -49,9 +54,8 @@ export default function Contribute({contribute}) {
         }
     }, [location, contribute]);
 
-
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={()=>{navigation.navigate('PlaceDetails',{marker: contribute})}}>
             <Image
                 style={styles.image}
                 source={{ uri: contribute.image_url[0] }}
@@ -67,10 +71,11 @@ export default function Contribute({contribute}) {
                     starSize={20}
                     maxStars={5}
                     starStyle={{marginRight: 5}}
+                    onChange={()=>{}}
                     />
             </View>
 
-        </View>
+        </TouchableOpacity>
     );
 }
 

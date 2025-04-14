@@ -10,6 +10,7 @@ import { getReviewsById } from '../firebase/firebase';
 import Review from '../components/Review';
 
 export default function PlaceDetailsScreen({route}) {
+
     const navigation = useNavigation();
     const { marker } = route.params;
 
@@ -72,6 +73,7 @@ export default function PlaceDetailsScreen({route}) {
         }
     }, [location, marker]);
 
+    console.log("Marker : " + marker);
 
     return (
         <ScrollView style={containerStyles}>

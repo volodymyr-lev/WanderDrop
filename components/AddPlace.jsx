@@ -58,6 +58,7 @@ export default function AddPlace({ navigation }) {
     
                 console.log("Place added and contributes updated");
                 EventRegister.emit("MARKERS_UPDATED");
+                
             }
 
             navigation.goBack();
