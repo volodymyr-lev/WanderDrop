@@ -1,10 +1,12 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../context/AuthContext'; 
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import ProfileTabs from '../navigation/ProfileTabs';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { EventRegister } from 'react-native-event-listeners';
 
 
 export default function UserProfile({navigation}) {
@@ -12,6 +14,7 @@ export default function UserProfile({navigation}) {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    navigation = useNavigation()
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -31,6 +34,17 @@ export default function UserProfile({navigation}) {
         };
 
         fetchUserData();
+
+        const eventListener = EventRegister.addEventListener('MARKERS_UPDATED', async ()=>{
+            console.log("Fetching user from event");
+
+            fetchUserData();
+        })
+
+        return () => {
+            EventRegister.removeEventListener(eventListener);
+        };
+
     }, [user]);
 
     if (loading) {
@@ -48,7 +62,9 @@ export default function UserProfile({navigation}) {
             <View style={[styles.header, {justifyContent: 'center', alignItems: 'center', marginBottom: 10}]}>
                 <Text style={styles.headerText}>{userData.name}</Text>
 
-                <FontAwesome5/>
+                <TouchableOpacity style={styles.settings} onPress={()=>{navigation.navigate('Settings')}}>
+                    <FontAwesome5 name="cog" size={24} color={'#fff'}/>
+                </TouchableOpacity>
             </View>
 
             {/* userInfo */}
@@ -98,7 +114,8 @@ const styles = StyleSheet.create({
     },
     header: {
         marginTop: 70,
-
+        flexDirection: 'row',
+        width: '100%',
     },
     headerText: {
         fontSize: 16,
@@ -136,6 +153,14 @@ const styles = StyleSheet.create({
     },
     contributesAndReviewsContainer:{
         marginTop: 20,
+
+    },
+    settings:{
+        position: 'absolute',
+        right: 0,
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
 
     }
 });

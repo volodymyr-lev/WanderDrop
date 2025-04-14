@@ -1,50 +1,90 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect } from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import MapView, { Marker } from 'react-native-maps';
 import OpenMapButton from '../components/OpenMapButton';
-import { getReviewsById } from '../firebase/firebase'; 
+import { getReviewsById, getUser } from '../firebase/firebase'; 
 import Review from '../components/Review';
+import { AuthContext } from '../context/AuthContext';
+import { handleSave } from '../firebase/firebase'; 
+import { EventRegister } from 'react-native-event-listeners';
+import AddReviewModal from '../components/AddReviewModal'
 
 export default function PlaceDetailsScreen({route}) {
-
+    const {user} = useContext(AuthContext);
     const navigation = useNavigation();
     const { marker } = route.params;
-
+    
     const [reviews, setReviews] = useState([]);
     const [location, setLocation] = useState(null); 
     const [distance, setDistance] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const [isModalVisible, setModalVisible] = useState(false);
+    const [userData, setUserData] = useState(null);
+    
+    const [modalVisible, setModalVisible] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-
+    
     const openModal = (imageUrl) => {
         setSelectedImage(imageUrl);
-        setModalVisible(true);
+        setIsModalVisible(true);
     };
     const closeModal = () => {
         setSelectedImage(null);
-        setModalVisible(false);
+        setIsModalVisible(false);
     };
+    
+    let isSaved = false;
 
-    useEffect(() => {
-        (async () => {
+
+
+    const fetchAllData = async () => {
+        setLoading(true);
+        try {
+            const reviewsData = await getReviewsById(marker.id);
+            let u = null;
+            if(user)
+            {
+                u = await getUser(user.uid);
+            }
+    
             let { status } = await Location.requestForegroundPermissionsAsync(); 
-            let reviewsData = await getReviewsById(marker.id);
             if (status !== 'granted') {
                 console.log('Permission to access location was denied');
+                setLoading(false);
                 return;
             }
+    
             let loc = await Location.getCurrentPositionAsync({});
+    
+
             setReviews(reviewsData);
+            if(user){
+                setUserData(u);
+            }
             setLocation(loc.coords);
-            setLoading(false);
-        })();
+        } catch (err) {
+            console.error("Error fetching all data", err);
+        }
+        setLoading(false);
+    };
+    
+    useEffect(() => {
+        fetchAllData();
+    
+        const eventListener = EventRegister.addEventListener('SAVED_CHANGED', async () => {
+            console.log("Fetching all data from event");
+            await fetchAllData();
+        });
+    
+        return () => {
+            EventRegister.removeEventListener(eventListener);
+        };
     }, []);
+    
 
     const calculateDistance = (userLat, userLong) => {
         if (marker.latitude && marker.longitude) {
@@ -73,7 +113,17 @@ export default function PlaceDetailsScreen({route}) {
         }
     }, [location, marker]);
 
-    console.log("Marker : " + marker);
+    if (loading) {
+        return (
+            <View style={{backgroundColor:'#161414'}}>
+                <ActivityIndicator size="large" color="#4CAF50" />
+            </View>
+        );
+    }
+
+    if(userData){
+        isSaved = userData.saved.includes(marker.id);
+    }
 
     return (
         <ScrollView style={containerStyles}>
@@ -100,8 +150,25 @@ export default function PlaceDetailsScreen({route}) {
                         <Text style={headerStyles.header_text}>
                             Distance: {loading ? <ActivityIndicator size="small" color="#fff" /> : (distance ? `${distance} km` : 'Calculating...')}
                         </Text>
+                    
+                        <TouchableOpacity style={{position: 'absolute', bottom: 20, right: 20}}
+                            onPress={()=>{
+                                if(user){
+                                    handleSave(user.uid,marker.id,userData.saved)
+                                }
+                            }}
+                        >
+                            <FontAwesome5 
+                                name="bookmark" 
+                                color={isSaved? '#24C690' : '#fff'} 
+                                size={24}
+                                solid={isSaved}
+                                />
+                        </TouchableOpacity>
                     </View>
+
                 </View>
+
 
                 <MapView
                     style={mapStyles.map}
@@ -181,15 +248,48 @@ export default function PlaceDetailsScreen({route}) {
                     >Reviews</Text>
 
                     {reviews.length > 0 ? (
-                        reviews.map((review, index) => (
-                            <Review key={index} data={review} 
-                                pad = {20}
-                                backColor={'#333333'}
-                            />
-                        ))
+                        <>
+                            {reviews.map((review, index) => (
+                                <Review
+                                    key={index}
+                                    data={review}
+                                    pad={20}
+                                    backColor={'#333333'}
+                                />
+                            ))}
+
+                            {user && (
+                            <>
+                                <TouchableOpacity
+                                    onPress={() => setModalVisible(true)}
+                                    style={{
+                                        backgroundColor: '#24C690',
+                                        padding: 10,
+                                        borderRadius: 5,
+                                        marginTop: 20,
+                                        alignSelf: 'center',
+                                        marginBottom: 20,
+                                    }}
+                                >
+                                    <Text style={{ color: '#fff' }}>Add Review</Text>
+                                </TouchableOpacity>
+
+                                <AddReviewModal
+                                    visible={modalVisible}
+                                    onClose={() => setModalVisible(false)}
+                                    placeId={marker.id}
+                                    user={user}
+                                    onReviewAdded={fetchAllData}
+                                />
+                            </>
+                            )}
+                        </>
                     ) : (
-                        <Text style={{ color: '#fff' }}>No reviews available.</Text>
+                        <Text style={{ color: 'white', padding: 20 }}>
+                            No reviews yet.
+                        </Text>
                     )}
+
                 </ScrollView>
 
             </View>
@@ -320,5 +420,6 @@ const reviewStyles = StyleSheet.create({
         marginBottom: 10,
         marginTop: 16,
         borderRadius: 16,
+        maxHeight: 400,
     },
 })

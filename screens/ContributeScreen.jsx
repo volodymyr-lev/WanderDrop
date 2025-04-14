@@ -20,13 +20,10 @@ export default function ContributeScreen({navigation}) {
                     return;
                 } 
                 
-                
                 const fetchedUser = await getUser(user.uid);
                 setUserInfo(fetchedUser);
                 setLoading(false);
 
-                
-                console.log("Fethced user data : " + fetchedUser.contributes);
             } catch (error) {
                 console.error('Error in ContributeScreen:', error);
                 setLoading(false);
@@ -54,14 +51,22 @@ export default function ContributeScreen({navigation}) {
         );
     }
 
+    console.log("USER STATUS : " + user?.uid);
+    console.log("FETCHED USER DATA : " + userInfo?.name);
+    
+    if(user?.uid)
+    {
+
+        console.log("CURRENT USER IN CONTRIBUTE : " + userInfo?.name);
+    }
     return (
         <View style={styles.container}>
             {user ? (
                 <View style={styles.contributesContainer}>
                     <Text style={styles.contributionText}>
-                        My contributions
+                        My Contributions
                     </Text> 
-                    {userInfo.contributes.length === 0 && (
+                    {userInfo?.contributes.length === 0 && (
                         <View style={styles.noContributesContainer}>
                             <Text style={styles.noContributesText}>
                                 No contributes yet

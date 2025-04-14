@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore'
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { EventRegister } from "react-native-event-listeners";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC4qFVXwrR9mRs8XoRFE0yFf84bDDIqv7Q",
@@ -69,6 +70,28 @@ export const getUser = async (id) => {
     }
 }
 
+export const getPlacesByIds = async (ids) => {
+    try{
+        
+        const places = [];
+
+        for(let id of ids) {
+            const placeRef = doc(db,'places',id);
+            const snap = await getDoc(placeRef);
+
+            if (snap.exists()) {
+                places.push({ id: snap.id, ...snap.data() });
+            }
+        }
+
+
+        return places;
+
+    } catch(error) {
+        console.error("Error has occured while fetching places : " + error);
+        return [];
+    }
+}
 
 export const handleRegister = async (email, password, name) => {
     try {
@@ -127,3 +150,32 @@ export const getContributesByUser = async (user) => {
         console.error('Error while getting contributes:', error);
     }
 }
+
+export const handleSave = async (userId, placeId, saved) => {
+    try {
+        const userRef = doc(db, 'users', userId);
+        let ret = false;
+
+        if (saved.includes(placeId)) {
+            await updateDoc(userRef, {
+                saved: arrayRemove(placeId)
+            });
+
+            ret = true;
+
+            console.log("Place removed.");
+        } else {
+            await updateDoc(userRef, {
+                saved: arrayUnion(placeId)
+            });
+
+            console.log("Place added.");
+        }
+
+        EventRegister.emit("SAVED_CHANGED");
+        return ret;
+    } catch (err) {
+        console.error('Error updating saved places:', err);
+        return null;
+    }
+};

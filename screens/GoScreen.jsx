@@ -5,6 +5,7 @@ import { getMarkers } from '../firebase/firebase';
 import { TextInput } from 'react-native-gesture-handler';
 import { MaterialIcons } from '@expo/vector-icons';
 import FoundPlace from '../components/FoundPlace';
+import { EventRegister } from 'react-native-event-listeners';
 
 
 export default function GoScreen({navigation}) {
@@ -19,6 +20,16 @@ export default function GoScreen({navigation}) {
         }
 
         fetchMarkers();
+
+        const eventListener = EventRegister.addEventListener('MARKERS_UPDATED', async ()=>{
+            console.log("Fetching user from event");
+
+            fetchMarkers();
+        })
+
+        return () => {
+            EventRegister.removeEventListener(eventListener);
+        };
     }, []);
 
     useEffect(() => {

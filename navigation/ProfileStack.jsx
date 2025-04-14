@@ -9,9 +9,13 @@ const Stack = createNativeStackNavigator();
 
 export default function ProfileStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+    screenOptions={{
+        contentStyle: { backgroundColor: '#161414' },
+      }}
+    >
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'Profile', headerShown: false }} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} options={{title:'Settings', headerShown: false}}/>
       <Stack.Screen name="PlaceDetails" component={PlaceDetailsScreen} options={{ title: 'Details', headerShown: false }} />
     </Stack.Navigator>
   );

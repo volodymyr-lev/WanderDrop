@@ -67,6 +67,7 @@ export default function Review({data , pad, backColor}) {
                     starSize={20}
                     maxStars={5}
                     starStyle={{marginRight: 5}}
+                    onChange={()=>{}}
                     />
             </View>
 

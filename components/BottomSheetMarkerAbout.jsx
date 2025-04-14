@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator, Modal, TouchableOpacity, Touchable } from 'react-native';
 import * as Location from 'expo-location';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import {FontAwesome5} from '@expo/vector-icons';
 import OpenMapButton from './OpenMapButton'; 
+import { useNavigation } from '@react-navigation/native';
 
 export default function BottomSheetMarkerAbout({ marker }) {
+    const navigation = useNavigation();
     const [location, setLocation] = useState(null); 
     const [distance, setDistance] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -79,7 +81,26 @@ export default function BottomSheetMarkerAbout({ marker }) {
                     <Text style={headerStyles.header_text}>
                         Distance: {loading ? <ActivityIndicator size="small" color="#fff" /> : (distance ? `${distance} km` : 'Calculating...')}
                     </Text>
+                
+
+                    <TouchableOpacity style={{
+                        backgroundColor: '#24C690',
+                        position:'absolute',
+                        bottom: 15,
+                        right: 15,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                    }}
+                        onPress={()=>{navigation.navigate('PlaceDetails',{marker})}}
+                    >
+                        <FontAwesome5 name="angle-right" size={20} color="#fff" />
+
+                    </TouchableOpacity>
                 </View>
+
             </View>
 
             {/* description */}

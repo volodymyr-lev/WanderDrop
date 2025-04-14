@@ -11,6 +11,8 @@ import { View } from 'react-native';
 import GoStack from './GoStack';
 import ProfileStack from './ProfileStack';
 import ContributeStack from './ContributeStack';
+import SavedStack from './SavedStack';
+import ExploreStack from './ExploreStack';
 
 
 const Tab = createBottomTabNavigator();
@@ -78,9 +80,9 @@ export default function Tabs() {
             
         })}
       >
-        <Tab.Screen name="Explore" component={ExploreScreen} />
+        <Tab.Screen name="Explore" component={ExploreStack} />
         <Tab.Screen name="Go" component={GoStack} />
-        <Tab.Screen name="Saved" component={SavedScreen} />
+        <Tab.Screen name="Saved" component={SavedStack} />
         <Tab.Screen name="Contribute" component={ContributeStack} />
         <Tab.Screen name="Profile" component={ProfileStack} />
       </Tab.Navigator>
