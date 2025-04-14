@@ -1,0 +1,17 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ContributeScreen from '../screens/ContributeScreen';
+import PlaceDetailsScreen from '../screens/PlaceDetailsScreen';
+import AddPlace from '../components/AddPlace';
+
+const Stack = createNativeStackNavigator();
+
+export default function ContributeStack() {
+  return (
+    <Stack.Navigator>
+        <Stack.Screen name="ContributeMain" component={ContributeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="AddPlace" component={AddPlace} options={{ title: 'Details', headerShown: false }} />
+    </Stack.Navigator>
+  );
+}
+

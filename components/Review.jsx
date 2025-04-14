@@ -12,6 +12,8 @@ export default function Review({data , pad, backColor}) {
     useEffect(() => {
         const getUserById = async () => {
             try {
+                console.log("USER " + data.user_id)
+
                 const u = await getUser(data.user_id);
                 setUser(u);
                 setLoading(false);

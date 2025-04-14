@@ -8,6 +8,7 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import BottomSheetMarkerInfo from '../components/BottomSheetMarkerInfo';
 import OpenMapButton from '../components/OpenMapButton';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import { EventRegister } from 'react-native-event-listeners';
 
 export default function ExploreScreen() {
     const [location, setLocation] = useState(null);
@@ -38,12 +39,27 @@ export default function ExploreScreen() {
                 setLoading(false);
                 return;
             }
+            
+
             const fetchedMarkers = await getMarkers();
             setMarkers(fetchedMarkers);
             let loc = await Location.getCurrentPositionAsync({});
             setLocation(loc.coords);
             setLoading(false);
         })();
+
+        const eventListener = EventRegister.addEventListener('MARKERS_UPDATED', async ()=>{
+
+            console.log("Reloading explorer screen");
+
+            setMarkers([]);
+            const fetchedMarkers = await getMarkers();
+            setMarkers(fetchedMarkers);
+        })
+
+        return () => {
+            EventRegister.removeEventListener(eventListener);
+        };
     }, []);
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -137,4 +153,5 @@ const styles = StyleSheet.create({
     bottomSheetView: {
         height: '100%',
     },
+    
 });

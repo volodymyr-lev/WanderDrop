@@ -30,8 +30,8 @@ export default function MarkerTabs({ marker }) {
             </View>
 
             {selectedTab === 'About' 
-            ? <BottomSheetMarkerAbout marker={marker} /> 
-            : <BottomSheetMarkerReviews marker={marker} />}
+            ? <BottomSheetMarkerAbout marker={marker}/> 
+            : <BottomSheetMarkerReviews marker={marker}/>}
 
         </View>
     );

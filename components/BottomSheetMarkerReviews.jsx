@@ -26,6 +26,7 @@ export default function BottomSheetMarkerReviews({ marker , backgroundColor}) {
         }
     }, [marker.id]);
 
+    
     if(loading){
         return (
             <View style={styles.container}>
@@ -33,7 +34,6 @@ export default function BottomSheetMarkerReviews({ marker , backgroundColor}) {
             </View>
         );
     }
-    console.log(reviews);
 
     return (
         <ScrollView style={styles.container}>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../context/AuthContext'; 
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import ProfileTabs from '../navigation/ProfileTabs';
 
 
 export default function UserProfile({navigation}) {
@@ -39,13 +40,11 @@ export default function UserProfile({navigation}) {
         );
     }
 
-    console.log(userData);
-
     return (
         <View style={styles.container}>
             
             {/* header */}
-            <View style={styles.header}>
+            <View style={[styles.header, {justifyContent: 'center', alignItems: 'center', marginBottom: 10}]}>
                 <Text style={styles.headerText}>{userData.name}</Text>
             </View>
 
@@ -72,6 +71,17 @@ export default function UserProfile({navigation}) {
                 </View>
             </View>
 
+            {/* profile description */}
+            <View style={styles.profileDescriptionContainer}>
+                <Text style={styles.profileDescriptionText}>
+                    {userData.description}
+                </Text>
+            </View>
+
+            {/* Contributes and reviews */}
+            <View style={styles.contributesAndReviewsContainer}>
+                <ProfileTabs userData={userData}/>
+            </View>
 
         </View>
     )
@@ -107,9 +117,22 @@ const styles = StyleSheet.create({
 
     },
     userInfoContributionText:{
-        fontSize: 16,
+        fontSize: 14,
         color: '#fff',
         textAlign: 'center',
         marginTop: 10,
+    },
+    profileDescriptionContainer:{
+        alignSelf: 'flex-start',
+        marginLeft: 20,
+        marginTop: 20,
+    },
+    profileDescriptionText:{
+        fontSize: 12,
+        color: '#fff',
+    },
+    contributesAndReviewsContainer:{
+        marginTop: 20,
+
     }
 });

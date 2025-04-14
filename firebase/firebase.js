@@ -51,10 +51,8 @@ export const getReviewsById = async (id) => {
 
 export const getUser = async (id) => {
     try{
-        
         const userRef = doc(db, 'users', id); 
         const snapshot = await getDoc(userRef);
-
         if (snapshot.exists()) {
             return {
                 id: snapshot.id,
@@ -90,3 +88,29 @@ export const handleRegister = async (email, password, name) => {
         alert(error.message);
     }
 };
+
+export const getContributesByUser = async (user) => {
+    const userContributes = user.contributes || [];
+    let contr = [];
+
+    try{
+        const contributesRef = collection(db, 'places');
+        const snapshot = await getDocs(contributesRef);
+        const contributesList = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+    
+        
+        contributesList.forEach((contribute)=>{
+            if(userContributes.includes(contribute.id)){
+                contr.push(contribute);
+            }
+        })
+
+        return contr;
+
+    } catch (error) {
+        console.error('Error while getting contributes:', error);
+    }
+}
