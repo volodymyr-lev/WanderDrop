@@ -7,7 +7,11 @@ const Stack = createNativeStackNavigator();
 
 export default function GoStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+    screenOptions={{
+        contentStyle: { backgroundColor: '#161414' },
+      }}
+    >
       <Stack.Screen name="GoMain" component={GoScreen} options={{ headerShown: false }} />
       <Stack.Screen name="PlaceDetails" component={PlaceDetailsScreen} options={{ title: 'Details', headerShown: false }} />
     </Stack.Navigator>

@@ -247,6 +247,7 @@ export default function PlaceDetailsScreen({route}) {
                         style={{color: '#fff', fontSize: 14, marginBottom: 10}}
                     >Reviews</Text>
 
+
                     {reviews.length > 0 ? (
                         <>
                             {reviews.map((review, index) => (
@@ -257,32 +258,6 @@ export default function PlaceDetailsScreen({route}) {
                                     backColor={'#333333'}
                                 />
                             ))}
-
-                            {user && (
-                            <>
-                                <TouchableOpacity
-                                    onPress={() => setModalVisible(true)}
-                                    style={{
-                                        backgroundColor: '#24C690',
-                                        padding: 10,
-                                        borderRadius: 5,
-                                        marginTop: 20,
-                                        alignSelf: 'center',
-                                        marginBottom: 20,
-                                    }}
-                                >
-                                    <Text style={{ color: '#fff' }}>Add Review</Text>
-                                </TouchableOpacity>
-
-                                <AddReviewModal
-                                    visible={modalVisible}
-                                    onClose={() => setModalVisible(false)}
-                                    placeId={marker.id}
-                                    user={user}
-                                    onReviewAdded={fetchAllData}
-                                />
-                            </>
-                            )}
                         </>
                     ) : (
                         <Text style={{ color: 'white', padding: 20 }}>
@@ -290,6 +265,31 @@ export default function PlaceDetailsScreen({route}) {
                         </Text>
                     )}
 
+                    {user && (
+                    <>
+                        <TouchableOpacity
+                            onPress={() => setModalVisible(true)}
+                            style={{
+                                backgroundColor: '#24C690',
+                                padding: 10,
+                                borderRadius: 5,
+                                marginTop: 20,
+                                alignSelf: 'center',
+                                marginBottom: 20,
+                            }}
+                        >
+                            <Text style={{ color: '#fff' }}>Add Review</Text>
+                        </TouchableOpacity>
+
+                        <AddReviewModal
+                            visible={modalVisible}
+                            onClose={() => setModalVisible(false)}
+                            placeId={marker.id}
+                            user={user}
+                            onReviewAdded={fetchAllData}
+                        />
+                    </>
+                    )}
                 </ScrollView>
 
             </View>

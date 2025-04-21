@@ -95,6 +95,7 @@ export default function ExploreScreen() {
                     showsUserLocation={true}>
                     {markers.map((marker) => (
                         <Marker
+                            
                             key={marker.id}
                             coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
                             onPress={() => handleMarkerPress(marker)}

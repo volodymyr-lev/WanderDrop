@@ -8,7 +8,11 @@ const Stack = createNativeStackNavigator();
 
 export default function ContributeStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+    screenOptions={{
+        contentStyle: { backgroundColor: '#161414' },
+      }}
+    >
         <Stack.Screen name="ContributeMain" component={ContributeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="AddPlace" component={AddPlace} options={{ title: 'Add', headerShown: false }} />
         <Stack.Screen name="PlaceDetails" component={PlaceDetailsScreen} options={{ title: 'Details', headerShown: false }} />
