@@ -22,6 +22,7 @@ export default function LocationPicker({ navigation, route }) {
     return (
         <View style={styles.container}>
             <MapView
+                testID = 'location-input'
                 style={styles.map}
                 onPress={handleSelectLocation}
                 initialRegion={{

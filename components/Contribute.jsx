@@ -55,8 +55,9 @@ export default function Contribute({contribute}) {
     }, [location, contribute]);
 
     return (
-        <TouchableOpacity style={styles.container} onPress={()=>{navigation.navigate('PlaceDetails',{marker: contribute})}}>
+        <TouchableOpacity testID = "touchable" style={styles.container} onPress={()=>{navigation.navigate('PlaceDetails',{marker: contribute})}}>
             <Image
+                testID='image'
                 style={styles.image}
                 source={{ uri: contribute.image_url[0] }}
             />

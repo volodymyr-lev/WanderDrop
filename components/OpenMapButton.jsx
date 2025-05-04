@@ -18,6 +18,7 @@ const openInGoogleMaps = (latitude, longitude) => {
           <ActivityIndicator size="large" color="#3EC3FF" />
         ) : (
           <TouchableOpacity
+            testID="open-map-button"
             onPress={() => openInGoogleMaps(latitude, longitude)}
             style={styles.button}
           >

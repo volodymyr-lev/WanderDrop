@@ -31,7 +31,7 @@ export default function Review({data , pad, backColor}) {
     if(loading){
         return (
             <View style={styles.container}>
-                <ActivityIndicator size="large" color="#24C690" />
+                <ActivityIndicator testID='loader' size="large" color="#24C690" />
             </View>
         );
     }

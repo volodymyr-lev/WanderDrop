@@ -27,7 +27,7 @@ export default function Contributes({userData}) {
     if(loading){
         return (
             <View style={styles.container}>
-                <ActivityIndicator size="large" color="#24C690" />
+                <ActivityIndicator testID="activity-indicator" size="large" color="#24C690" />
             </View>
         );
     }

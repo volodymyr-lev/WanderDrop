@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { getReviewsById } from '../firebase/firebase';
 import Review from './Review';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
-export default function BottomSheetMarkerReviews({ marker , backgroundColor}) {
+export default function BottomSheetMarkerReviews({ marker }) {
     const [reviews, setReviews] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
 
@@ -24,13 +25,13 @@ export default function BottomSheetMarkerReviews({ marker , backgroundColor}) {
         if(marker?.id){
             fetchReviews();
         }
-    }, [marker.id]);
+    }, [marker?.id]);
 
     
     if(loading){
         return (
-            <View style={styles.container}>
-                <ActivityIndicator size="large" color="#24C690" />
+            <View testID="loader" style={styles.container}>
+                <ActivityIndicator testID="loader" size="large" color="#24C690" />
             </View>
         );
     }

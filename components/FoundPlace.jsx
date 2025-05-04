@@ -54,7 +54,7 @@ export default function FoundPlace({marker, navigation}) {
     };
 
     return (
-        <TouchableOpacity style = {styles.container} onPress={() => navigation.navigate('PlaceDetails', {marker})}>
+        <TouchableOpacity testID="found-place" style = {styles.container} onPress={() => navigation.navigate('PlaceDetails', {marker})}>
             <Image
                 source={{ uri: marker.image_url[0] }}            
                 resizeMode="cover"

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator, Modal, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import { ScrollView } from 'react-native-gesture-handler';
-import {FontAwesome5} from '@expo/vector-icons';
-import OpenMapButton from './OpenMapButton'; 
+import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function BottomSheetMarkerAbout({ marker }) {
@@ -72,35 +71,35 @@ export default function BottomSheetMarkerAbout({ marker }) {
                 <Image
                     source={{ uri: marker.image_url[0] }}  
                     style={(marker.isNice) ? headerStyles.image_nice : headerStyles.image}
-                    resizeMode="cover" 
+                    resizeMode="cover"
+                    testID="header-image"
                 />
 
                 <View style={headerStyles.header_text_container}>
                     <Text style={headerStyles.header_text_header}>{marker.name}</Text>
                     <Text style={headerStyles.header_text}>Added By: {marker.added_by}</Text>
                     <Text style={headerStyles.header_text}>
-                        Distance: {loading ? <ActivityIndicator size="small" color="#fff" /> : (distance ? `${distance} km` : 'Calculating...')}
+                        Distance: {loading ? 'Calculating...' : (distance ? `${distance} km` : 'Calculating...')}
                     </Text>
                 
-
-                    <TouchableOpacity style={{
-                        backgroundColor: '#24C690',
-                        position:'absolute',
-                        bottom: 15,
-                        right: 15,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: 40,
-                        height: 40,
-                        borderRadius: 20,
-                    }}
+                    <TouchableOpacity 
+                        style={{
+                            backgroundColor: '#24C690',
+                            position:'absolute',
+                            bottom: 15,
+                            right: 15,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                        }}
                         onPress={()=>{navigation.navigate('PlaceDetails',{marker})}}
+                        testID="nav-button"
                     >
                         <FontAwesome5 name="angle-right" size={20} color="#fff" />
-
                     </TouchableOpacity>
                 </View>
-
             </View>
 
             {/* description */}
@@ -108,18 +107,21 @@ export default function BottomSheetMarkerAbout({ marker }) {
                 <Text style={descriptionStyles.descriptionText}>{marker.description+'\n'}</Text>
             </ScrollView>
 
-
             {/* photos */}
             {marker.image_url && marker.image_url.length > 0 && (
                 <View style={photosStyles.imageCollageContainer}>
                     <Text style={photosStyles.imageCollageTitle}>Photos</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {marker.image_url.map((imageUrl, index) => (
-                            <TouchableOpacity key={index} onPress={() => openModal(imageUrl)}>
+                            <TouchableOpacity 
+                                key={index} 
+                                onPress={() => openModal(imageUrl)}
+                                testID={`image-${index}`}
+                            >
                                 <Image
-                                    key={index}
                                     source={{ uri: imageUrl }}
                                     style={photosStyles.image}
+                                    testID={`image-thumbnail-${index}`}
                                 />
                             </TouchableOpacity>
                         ))}
@@ -130,22 +132,21 @@ export default function BottomSheetMarkerAbout({ marker }) {
             {/* Modal for image preview */}
             {selectedImage && (
                 <Modal
-                visible={isModalVisible}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={closeModal}
+                    visible={isModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={closeModal}
+                    testID="image-modal"
                 >
-                <View style={photosStyles.modalContainer} onTouchEnd={closeModal}>
-                    <Image
-                        source={{ uri: selectedImage }}
-                        style={photosStyles.modalImage}
-                    />
-                </View>
+                    <View style={photosStyles.modalContainer} onTouchEnd={closeModal} testID="modal-container">
+                        <Image
+                            source={{ uri: selectedImage }}
+                            style={photosStyles.modalImage}
+                            testID="modal-image"
+                        />
+                    </View>
                 </Modal>
             )}
-    
-                
-            {/* Open Map Button */}
         </View>
     );
 }
